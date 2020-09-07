@@ -1,26 +1,56 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
+import { JsonToTable } from "react-json-to-table";
+const request = require('request');
 
 function App() {
+  const[display, setDisplay] = useState([]);
+  useEffect(() => {
+    request (reqStation, false, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+        setDisplay((JSON.parse(JSON.stringify(body.data.bikeRentalStations, null, 4))));
+      }
+    });
+     }, []);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h1>Kaupunkipyörätilanne</h1>
+        <JsonToTable json={display} />
     </div>
   );
 }
+
+
+var req = {
+  url: 'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql',
+  method: 'post',
+  headers: { "Content-Type": "application/json" },
+  body: { "query": `{
+    bikeRentalStations {
+    stationId
+    name
+    bikesAvailable
+    spacesAvailable
+    lat
+    lon
+    allowDropoff
+  }
+  }` },
+  json: true
+};
+
+var reqStation = {
+  url: 'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql',
+  method: 'post',
+  headers: { "Content-Type": "application/json" },
+  body: { "query": `{
+    bikeRentalStations {
+    name
+    bikesAvailable
+    spacesAvailable
+  }
+  }` },
+  json: true
+};
 
 export default App;
