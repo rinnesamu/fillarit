@@ -10,7 +10,9 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-json-to-table": "^0.1.5",
-    "react-scripts": "3.4.3"
+    "react-leaflet": "^2.7.0",
+    "react-scripts": "3.4.3",
+    "leaflet": "^1.7.1"
   },
   "scripts": {
     "start": "react-scripts start",
