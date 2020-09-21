@@ -1,20 +1,20 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import { JsonToTable } from "react-json-to-table";
-import L from 'leaflet';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet'
-import {marker} from 'leaflet/dist/leaflet-src.esm';
-//import "leaflet/dist/leaflet.css";
+import conditions from  './components/Weather'
+
 
 const request = require('request');
+const key = process.env['WEATHER_API_KEY '];
+
 
 
 function App() {
-  const [markers, setMarkers] = useState([[60.192059, 24.945831], [61.192059, 24.945831]])
+  let weather = conditions();
   const[stations, setStations] = useState([]);
   const position = [60.192059, 24.945831]
   const map = (
-      <Map center={position} zoom={13} style={{ height: '1080px', width: '1920px' }}>
+      <Map center={position} zoom={12} style={{ height: '1080px', width: '1920px' }}>
         <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
@@ -36,6 +36,12 @@ function App() {
       </Map>
   )
   useEffect(() => {
+    /*request(reqWeather, false, function (error, response, body) {
+      if (!error && response.statusCode === 200) {
+        console.log("JSON", JSON.parse(JSON.stringify(body)));
+        setWeather(JSON.parse(JSON.stringify(body)));
+      }
+    })*/
     request (reqStation, false, function (error, response, body) {
       if (!error && response.statusCode === 200) {
         setStations((JSON.parse(JSON.stringify(body.data.bikeRentalStations, null, 4))));
@@ -44,8 +50,14 @@ function App() {
      }, []);
   return (
     <div className="App">
-      {map}
+      <div className="Map">
+        {map}
+      </div>
+      <div className="Weather">
+        {weather}
+      </div>
     </div>
+
   );
 }
 
@@ -70,7 +82,7 @@ var req = {
   json: true
 };
 
-var reqStation = {
+let reqStation = {
   url: 'https://api.digitransit.fi/routing/v1/routers/hsl/index/graphql',
   method: 'post',
   headers: { "Content-Type": "application/json" },
@@ -85,6 +97,12 @@ var reqStation = {
   }` },
   json: true
 };
+
+let reqWeather ={
+  url: 'http://api.openweathermap.org/data/2.5/weather?q=Helsinki&appid=' + key,
+  method: 'get'
+};
+
 
 export default App;
 
