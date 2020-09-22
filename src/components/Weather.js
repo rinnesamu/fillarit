@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 
 const request = require('request');
-const key = "114332134ea7ed53cb7a0e88a863eb5d";
+const key = process.env['REACT_APP_WEATHER_API_KEY'];
 
 function Weather(){
   const [weather, setWeather] = useState(null);
